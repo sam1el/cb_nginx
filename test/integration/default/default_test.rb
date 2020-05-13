@@ -3,14 +3,15 @@
 # The InSpec reference, with examples and extensive documentation, can be
 # found at https://www.inspec.io/docs/reference/resources/
 
-unless os.windows?
-  # This is an example test, replace with your own test.
-  describe user('root'), :skip do
-    it { should exist }
-  end
+describe file('/etc/yum.repos.d/nginx.repo') do
+  it { should exist }
+  its('content') { should include('enabled=1') }
+  its('content') { should include('baseurl=https://nginx.org/packages/centos/8/$basearch') }
+  its('content') { should include('gpgkey=https://nginx.org/keys/nginx_signing.key') }
+  its('content') { should include('name=Nginx.org Repository') }
 end
 
-# This is an example test, replace it with your own test.
-describe port(80), :skip do
-  it { should_not be_listening }
+describe yum.repo('nginx') do
+  it { should exist }
+  it { should be_enabled }
 end
